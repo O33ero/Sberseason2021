@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class KeyCounter {
@@ -25,6 +26,7 @@ public final class KeyCounter {
             HashSet<Object> t = new HashSet<>();
             t.add(value);
             keyMap.put(key, t);
+            if(verbose) logger.log(Level.INFO, "Added new key: key = {0}", key);
         }
     }
 

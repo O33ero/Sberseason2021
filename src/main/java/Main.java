@@ -14,11 +14,11 @@ import java.util.List;
 public class Main {
 
     /**
-     * Обработчик параметров. Возвращает {@code false}, если обнаружена ошибка в параментрах
+     * Обработчик параметров. Возвращает {@code false}, если рекомендуется прикратить работу программы.
      * @param args Аргументы
      * @return Результат работы ({@code true} или {@code false})
      */
-    private static boolean parametersParse(String[] args) {
+    private static boolean parseParameters(String[] args) {
         ParameterTool parameters = ParameterTool.fromArgs(args);
 
 
@@ -30,8 +30,8 @@ public class Main {
                             -h, --help             - help box
                             -v, --verbose          - verbose debug info
                             -k, --key <STRING>     - set special key
-                           
                         """);
+            return false;
         }
 
         // Подпробный вывод
@@ -58,11 +58,11 @@ public class Main {
     public static void main(String[] args) throws  Exception{
 
         /* Обработка параметров */
-        if (!parametersParse(args)) return;
+        if (!parseParameters(args)) return;
 
 
         /* Создание и обработка потоков */
-        final List<String> lines = Files.readAllLines(Paths.get("./tests/test1.txt")); // Тестовый источник
+        final List<String> lines = Files.readAllLines(Paths.get("./tests/test6.txt")); // Тестовый источник
 
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();

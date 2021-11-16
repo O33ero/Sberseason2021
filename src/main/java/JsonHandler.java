@@ -14,9 +14,9 @@ public final class JsonHandler {
      */
     public static Object convertString(String str) {
         try {
-            JSONObject t = new JSONObject(str);
+            JSONArray t = new JSONArray(str);
             if(KeyCounter.verbose) logger.log(Level.INFO, "Detected JSONArray.");
-            return new JSONArray(str);                  // Пробуем распаковать как массив
+            return t;                                   // Пробуем распаковать как массив
         }
         catch (JSONException e0) {
             try {
@@ -27,7 +27,7 @@ public final class JsonHandler {
             catch (JSONException e1) {
                 if(KeyCounter.verbose) {
                     logger.log(Level.WARNING, e1.getMessage());
-                    logger.log(Level.INFO,  "Cannot convert string to json. str = {0}", str);
+                    logger.log(Level.INFO,  "Cannot convert string to json. str = \"{0}\"", str);
                 }
                 return null;                            // Не удалось распокавать
             }
