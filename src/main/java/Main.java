@@ -21,7 +21,6 @@ public class Main {
     private static boolean parseParameters(String[] args) {
         ParameterTool parameters = ParameterTool.fromArgs(args);
 
-
         // Вывод помощи
         if(parameters.has("h") || parameters.has("help")) {
             System.out.println(
@@ -60,29 +59,25 @@ public class Main {
         /* Обработка параметров */
         if (!parseParameters(args)) return;
 
-
         /* Создание и обработка потоков */
         final List<String> lines = Files.readAllLines(Paths.get("./tests/test6.txt")); // Тестовый источник
-
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
 
         DataStream<String> inStream = env.fromCollection(lines);                                    // Поток json-строк
                                                                                                     // TODO: Главный источник, может быть заменен любым другим
-
-        DataStream<Object> jsonStream = inStream.flatMap(new FlatMapFunction<String, Object>() {    // Поток json-объектов
+        DataStream<Object> jsonStream = inStream.flatMap(new FlatMapFunction<>() {    // Поток json-объектов
             @Override
-            public void flatMap(String s, Collector<Object> out) throws Exception {
+            public void flatMap(String s, Collector<Object> out) {
                 Object t = JsonHandler.convertString(s);
                 if (t != null) out.collect(t);
             }
         });
 
-
-        jsonStream.flatMap(new FlatMapFunction<Object, Object>() {                                 // Обработка всех json-объектов
+        jsonStream.flatMap(new FlatMapFunction<>() {                                 // Обработка всех json-объектов
             @Override
-            public void flatMap(Object obj, Collector<Object> collector) throws Exception {
+            public void flatMap(Object obj, Collector<Object> collector)  {
                 if(obj instanceof JSONObject)
                     JsonHandler.handleJson((JSONObject) obj);
                 else
@@ -94,14 +89,6 @@ public class Main {
 
         /* Результат обработки */
         KeyCounter.printResult();
-
-
-
-
-
-
-
-
 
     }
 }

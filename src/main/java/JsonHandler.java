@@ -51,7 +51,6 @@ public final class JsonHandler {
             if(obj.get(k) instanceof JSONObject) {                                  // Рекурсовно проверяем вложенные json-объекты
                 if(KeyCounter.verbose) logger.log(Level.INFO, "Detected inner JSONObject");
                 handleJson((JSONObject) obj.get(k));
-
             }
 
             if(obj.get(k) instanceof JSONArray) {
