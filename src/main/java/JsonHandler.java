@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 public final class JsonHandler {
     private final static Logger logger = Logger.getLogger("JsonHandler");
-
+    public static boolean verbose = false;
     /**
      * Конвертирует json-строку в json-объект или json-массив и возвращет его.
      * @param str json-строка
@@ -15,20 +15,21 @@ public final class JsonHandler {
     public static Object convertString(String str) {
         try {
             JSONArray t = new JSONArray(str);
-            if(KeyCounter.verbose) logger.log(Level.INFO, "Detected JSONArray.");
+            if(verbose) logger.log(Level.INFO, "Detected JSONArray.");
             return t;                                   // Пробуем распаковать как массив
         }
         catch (JSONException e0) {
             try {
                 JSONObject t = new JSONObject(str);
-                if(KeyCounter.verbose) logger.log(Level.INFO, "Detected JSONObject.");
+                if(verbose) logger.log(Level.INFO, "Detected JSONObject.");
                 return new JSONObject(str);             // Пробуем распаковать как объект
             }
             catch (JSONException e1) {
-                if(KeyCounter.verbose) {
+                if(verbose) {
                     logger.log(Level.WARNING, e1.getMessage());
                     logger.log(Level.INFO,  "Cannot convert string to json. str = \"{0}\"", str);
                 }
+                JsonStringHandler.handleString(str);
                 return null;                            // Не удалось распокавать
             }
         }
@@ -49,12 +50,12 @@ public final class JsonHandler {
                 KeyCounter.handleKey(k, obj.get(k));
 
             if(obj.get(k) instanceof JSONObject) {                                  // Рекурсовно проверяем вложенные json-объекты
-                if(KeyCounter.verbose) logger.log(Level.INFO, "Detected inner JSONObject");
+                if(verbose) logger.log(Level.INFO, "Detected inner JSONObject");
                 handleJson((JSONObject) obj.get(k));
             }
 
             if(obj.get(k) instanceof JSONArray) {
-                if(KeyCounter.verbose) logger.log(Level.INFO, "Detected inner JSONArray.");
+                if(verbose) logger.log(Level.INFO, "Detected inner JSONArray.");
                 handleJson((JSONArray) obj.get(k));
             }
         }

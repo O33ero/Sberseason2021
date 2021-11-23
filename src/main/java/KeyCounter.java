@@ -1,9 +1,12 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class KeyCounter {
-    public final static Map<String, HashSet<Object>> keyMap = new HashMap<>();
+    public final static Map<String, HashSet<Object>> keyMap = new LinkedHashMap<>();
 
     private static final Logger logger = Logger.getLogger("KeyCounter");
 
@@ -17,17 +20,40 @@ public final class KeyCounter {
      * @param value значение ключа
      */
     public static void handleKey(String key, Object value) {
-        if(keyMap.containsKey(key)) {
-            HashSet<Object> t = keyMap.get(key);
-            t.add(value);
-            keyMap.replace(key, t);
+
+        HashSet<Object> valueSet = keyMap.get(key);
+
+        if(valueSet != null) {
+            if(value instanceof JSONArray) { // Если значение JSONArray
+                JSONArray jsArray = (JSONArray) value;
+                for(Object now : valueSet) {
+                    if(now instanceof JSONArray) {
+                        if (jsArray.similar(now)) return; // Если есть такая пара ключ-значение уже есть, то ничего не делаем
+                    }
+                }
+            }
+            else if (value instanceof JSONObject) { // Если значение JSONObject
+                JSONObject jsObject = (JSONObject) value;
+                for(Object now : keyMap.get(key)) {
+                    if(now instanceof JSONObject) {
+                        if(jsObject.similar(now)) return; // Если уже есть такая пара ключ-значение, то ничего не делаем
+                    }
+                }
+            }
+        }
+
+
+        if(keyMap.containsKey(key) && valueSet != null) {
+            valueSet.add(value);
+            keyMap.replace(key, valueSet);
         }
         else {
-            HashSet<Object> t = new HashSet<>();
-            t.add(value);
-            keyMap.put(key, t);
+            valueSet = new HashSet<Object>();
+            valueSet.add(value);
+            keyMap.put(key, valueSet);
             if(verbose) logger.log(Level.INFO, "Added new key: key = {0}", key);
         }
+
     }
 
 
